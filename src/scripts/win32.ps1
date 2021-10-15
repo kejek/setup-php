@@ -411,7 +411,7 @@ Function Add-Tool() {
     $bat_content += "php %BIN_TARGET% %*"
     Set-Content -Path $bin_dir\$tool.bat -Value $bat_content
     Add-ToolsHelper $tool
-    Add-ToProfile $current_profile $tool "New-Alias $tool $bin_dir\$tool.bat" >$null 2>&1
+    Add-ToProfile $current_profile $tool "New-Alias $tool $bin_dir\$tool.bat" 
     $tool_version = Get-ToolVersion $tool $ver_param
     Add-Log $tick $tool "Added $tool $tool_version"
   } else {
@@ -446,7 +446,7 @@ Function Add-Composertool() {
   if(Test-Path $composer_lock) {
     Remove-Item -Path $composer_lock -Force
   }
-  (composer global require $prefix$release 2>&1 | Tee-Object -FilePath $env:APPDATA\Composer\composer.log) >$null 2>&1
+  (composer global require $prefix$release 2>&1 | Tee-Object -FilePath $env:APPDATA\Composer\composer.log) 
   $json = findstr $prefix$tool $env:APPDATA\Composer\composer.json
   $log = findstr $prefix$tool $env:APPDATA\Composer\composer.log
   if(Test-Path $composer_bin\composer) {
@@ -496,7 +496,7 @@ if($env:RUNNER -eq 'self-hosted') {
   $bin_dir = 'C:\tools\bin'
   $php_dir = "$php_dir$version"
   $ext_dir = "$php_dir\ext"
-  Get-CleanPSProfile >$null 2>&1
+  Get-CleanPSProfile 
   New-Item $bin_dir -Type Directory -Force > $null 2>&1
   Add-Path -PathItem $bin_dir
   if($version -lt 5.6) {
@@ -509,19 +509,19 @@ if($env:RUNNER -eq 'self-hosted') {
   }
   New-Item $php_dir -Type Directory -Force > $null 2>&1
   Add-Path -PathItem $php_dir
-  setx PHPROOT $php_dir >$null 2>&1
+  setx PHPROOT $php_dir 
 } else {
   $current_profile = "$PSHOME\Profile.ps1"
   if(-not(Test-Path -LiteralPath $current_profile)) {
-    New-Item -Path $current_profile -ItemType "file" -Force >$null 2>&1
+    New-Item -Path $current_profile -ItemType "file" -Force 
   }
 }
 
 . $dist\..\src\scripts\tools\add_tools.ps1
 
-Add-Printf >$null 2>&1
+Add-Printf 
 Step-Log "Setup PhpManager"
-Install-PSPackage PhpManager PhpManager\PhpManager "$github/mlocati/powershell-phpmanager/releases/latest/download/PhpManager.zip" Get-Php >$null 2>&1
+Install-PSPackage PhpManager PhpManager\PhpManager "$github/mlocati/powershell-phpmanager/releases/latest/download/PhpManager.zip" Get-Php 
 Add-Log $tick "PhpManager" "Installed"
 
 Step-Log "Setup PHP"
@@ -535,7 +535,7 @@ $status = "Installed"
 $extra_version = ""
 if ($null -eq $installed -or -not("$($installed.Version).".StartsWith(($version -replace '^(\d+(\.\d+)*).*', '$1.'))) -or $ts -ne $installed.ThreadSafe) {
   if ($version -lt '7.0' -and (Get-InstalledModule).Name -notcontains 'VcRedist') {
-    Install-PSPackage VcRedist VcRedist-main\VcRedist\VcRedist "$github/aaronparker/VcRedist/archive/main.zip" Get-VcList >$null 2>&1
+    Install-PSPackage VcRedist VcRedist-main\VcRedist\VcRedist "$github/aaronparker/VcRedist/archive/main.zip" Get-VcList 
   }
   try {
     if ($version -match $nightly_versions) {
@@ -552,7 +552,7 @@ if ($null -eq $installed -or -not("$($installed.Version).".StartsWith(($version 
     ('opcache.enable=1', 'opcache.jit_buffer_size=256M', 'opcache.jit=1235') | ForEach-Object { $p=$_.split('='); Set-PhpIniKey -Key $p[0] -Value $p[1] -Path $php_dir }
   }
   if($env:update -eq 'true') {
-    Update-Php $php_dir >$null 2>&1
+    Update-Php $php_dir 
     $status = "Updated to"
   } else {
     $status = "Found"
@@ -566,7 +566,7 @@ if($installed.MajorMinorVersion -ne $version) {
 }
 ('date.timezone=UTC', 'memory_limit=-1', 'xdebug.mode=coverage') | ForEach-Object { $p=$_.split('='); Set-PhpIniKey -Key $p[0] -Value $p[1] -Path $php_dir }
 if($version -lt "5.5") {
-  ('libeay32.dll', 'ssleay32.dll') | ForEach-Object { Invoke-WebRequest -Uri "$php_builder/releases/download/openssl-1.0.2u/$_" -OutFile $php_dir\$_ >$null 2>&1 }
+  ('libeay32.dll', 'ssleay32.dll') | ForEach-Object { Invoke-WebRequest -Uri "$php_builder/releases/download/openssl-1.0.2u/$_" -OutFile $php_dir\$_  }
 } else {
   $enable_extensions += ('opcache')
 }
