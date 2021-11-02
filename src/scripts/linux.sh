@@ -225,6 +225,8 @@ install_pear(){
   sudo apt-get install wget
   wget http://pear.php.net/go-pear.phar
   php go-pear.phar
+  expect "1-11, 'all' or Enter to continue:"
+  send "\r"
   pear channel-update pear.php.net
   pear install Auth
   pear install Mail
