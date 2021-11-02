@@ -223,10 +223,13 @@ setup_php() {
 install_pear(){
   step_log "Install PEAR and PEAR Packages"
   sudo apt-get install wget
+  sudo apt-get install expect
   wget http://pear.php.net/go-pear.phar
   php go-pear.phar
   expect "1-11, 'all' or Enter to continue:"
   send "\r"
+  expect "Would you like to alter php.ini </etc/php/7.4/cli/php.ini>? [Y/n] :"
+  send "Y"
   pear channel-update pear.php.net
   pear install Auth
   pear install Mail
