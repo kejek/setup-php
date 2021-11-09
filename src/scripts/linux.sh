@@ -68,6 +68,9 @@ check_package() {
 add_extension() {
   local extension=$1
   prefix=$2
+  if [ "$extension" == "geoip"  ]; then
+      version = '7.4'
+  fi
   package=php"$version"-"$extension"
   enable_extension "$extension" "$prefix"
   if check_extension "$extension"; then
@@ -222,15 +225,11 @@ setup_php() {
 
 install_pear(){
   step_log "Install PEAR and PEAR Packages"
-  sudo apt-get install wget
-  sudo apt-get install expect
-  wget http://pear.php.net/go-pear.phar
-  php go-pear.phar
-  expect "1-11, 'all' or Enter to continue:"
-  send "\r"
-  expect "Would you like to alter php.ini </etc/php/7.4/cli/php.ini>? [Y/n] :"
-  send "Y"
-  pear channel-update pear.php.net
+  #sudo apt-get install wget
+  #sudo apt-get install expect
+  #wget https://pear.php.net/install-pear-nozlib.phar
+  #php install-pear-nozlib.phar
+  #pear channel-update pear.php.net
   pear install Auth
   pear install Mail
   pear install Net_Curl
