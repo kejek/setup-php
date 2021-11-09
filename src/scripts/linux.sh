@@ -223,21 +223,6 @@ setup_php() {
   add_log "${tick:?}" "PHP" "$status PHP $semver$extra_version"
 }
 
-install_pear(){
-  step_log "Install PEAR and PEAR Packages"
-  #sudo apt-get install wget
-  #sudo apt-get install expect
-  #wget https://pear.php.net/install-pear-nozlib.phar
-  #php install-pear-nozlib.phar
-  #pear channel-update pear.php.net
-  pear install Auth
-  pear install Mail
-  pear install Net_Curl
-  pear install XML_Parser
-  pear install XML_Serializer-0.21.0
-  pear install Mail_Mime
-}
-
 # Variables
 version=$1
 dist=$2
@@ -254,4 +239,3 @@ scripts="${dist}"/../src/scripts
 read_env
 self_hosted_setup
 setup_php
-install_pear
